@@ -35,10 +35,10 @@ void Mobita::softstart(Motor m1, Motor m2, Motor m3, Motor m4){
     if (Mobita::PWM_All) {
         uint16_t delay_ms = 333/PWM_All + ((333/PWM_All)? 1 : 0);
         for (uint8_t pwm = 1; pwm <= PWM_All; pwm++){
-            if (m1.pwm_pin) analogWrite(m1.pwm_pin, pwm);
-            if (m2.pwm_pin) analogWrite(m2.pwm_pin, pwm);
-            if (m3.pwm_pin) analogWrite(m3.pwm_pin, pwm);
-            if (m4.pwm_pin) analogWrite(m4.pwm_pin, pwm);
+            if (m1.pwm_pin) {analogWrite(m1.pwm_pin, pwm); m1.isInMotion = true;}
+            if (m2.pwm_pin) {analogWrite(m2.pwm_pin, pwm); m2.isInMotion = true;}
+            if (m3.pwm_pin) {analogWrite(m3.pwm_pin, pwm); m3.isInMotion = true;}
+            if (m4.pwm_pin) {analogWrite(m4.pwm_pin, pwm); m4.isInMotion = true;}
 
             delay(delay_ms)
         }
@@ -49,10 +49,10 @@ void Mobita::softstop(Motor m1, Motor m2, Motor m3, Motor m4){
     if (Mobita::PWM_All) {
         uint16_t delay_ms = 133/PWM_All + ((133/PWM_All)? 1 : 0);
         for (int16_t pwm = PWM_All; pwm >= 0; pwm--){
-            if (m1.pwm_pin) analogWrite(m1.pwm_pin, pwm);
-            if (m2.pwm_pin) analogWrite(m2.pwm_pin, pwm);
-            if (m3.pwm_pin) analogWrite(m3.pwm_pin, pwm);
-            if (m4.pwm_pin) analogWrite(m4.pwm_pin, pwm);
+            if (m1.pwm_pin) {analogWrite(m1.pwm_pin, pwm); m1.isInMotion = false;}
+            if (m2.pwm_pin) {analogWrite(m2.pwm_pin, pwm); m2.isInMotion = false;}
+            if (m3.pwm_pin) {analogWrite(m3.pwm_pin, pwm); m3.isInMotion = false;}
+            if (m4.pwm_pin) {analogWrite(m4.pwm_pin, pwm); m4.isInMotion = false;}
 
             delay(delay_ms)
         }
@@ -78,6 +78,9 @@ void Mobita::moveMotorBackward(Motor m1, Motor m2, Motor m3, Motor m4){
             m4.setDir(0x1, 0x0);
         }
     }
+    // if the motor is already in motion stop it before reversing it.
+    softstop((MotorA.isInMotion)? MotorA:defaultMotor, (MotorB.isInMotion)? MotorB:defaultMotor, (MotorC.isInMotion)? MotorC:defaultMotor, (MotorD.isInMotion)? MotorD:defaultMotor);
+
     softstart(m1, m2, m3, m4);
 }
 

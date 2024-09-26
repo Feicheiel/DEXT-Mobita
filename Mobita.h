@@ -48,6 +48,7 @@ class Mobita {
   
   struct Motor {
        uint8_t *pwm_pin, *fwd, *bck, fwd_dir {0x1}, bck_dir {0x1};
+       bool isInMotion = false;
        void setDir (const uint8_t& f, const uint8_t& b) {
               fwd_dir = f; bck_dir = b;
               digitalWrite(fwd, f); digitalWrite(bck, b);
